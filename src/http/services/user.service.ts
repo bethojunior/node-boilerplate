@@ -1,19 +1,25 @@
+import { injectable, inject } from "tsyringe";
 import { UserEntity } from "../../@types/user/user.entity";
 import UserRepository from "../repositories/user.repository";
 import { HelloJob } from "../../jobs/hello.job";
 
-const repository = new UserRepository();
-const helloJob = new HelloJob();
-
+@injectable()
 export default class UserService {
+  constructor(
+    @inject(UserRepository)
+    private userRepository: UserRepository,
+    @inject(HelloJob)
+    private helloJob: HelloJob
+  ) {}
+
   async store(props: any): Promise<UserEntity> {
-    return await repository.store(props);
+    return await this.userRepository.store(props);
   }
 
   async login(props: {email: string, password: string}) {
-    const result = await repository.login(props);
+    const result = await this.userRepository.login(props);
     
-    await helloJob.execute({
+    await this.helloJob.execute({
       email: result.email
     });
     

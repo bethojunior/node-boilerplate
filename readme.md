@@ -1,32 +1,58 @@
-# Boilerplate Node.js
+# Node.js Boilerplate
 
-Este é um boilerplate para projetos Node.js com TypeScript, Express e Bull para gerenciamento de filas.
+Este é um boilerplate para projetos Node.js utilizando TypeScript, Express, Prisma e injeção de dependência com tsyringe.
 
 ## 🚀 Tecnologias
 
 - Node.js
 - TypeScript
 - Express
-- Bull (para gerenciamento de filas)
-- Redis
-- Docker
+- Prisma (ORM)
+- Tsyringe (Injeção de Dependência)
 
 ## 📦 Estrutura do Projeto
 
 ```
 src/
 ├── @types/           # Definições de tipos TypeScript
-├── http/            
+├── http/
 │   ├── controllers/  # Controladores da aplicação
 │   ├── dto/          # Data Transfer Objects
-│   ├── repositories/ # Repositórios para acesso a dados
-│   └── services/     # Serviços de negócio
-├── jobs/             # Jobs para processamento em fila
-├── providers/        # Provedores de serviços (Bull, etc)
-└── routes/           # Rotas da aplicação
+│   ├── repositories/ # Repositórios para persistência de dados
+│   └── services/     # Lógica das regras de negócio
+├── jobs/             # Jobs em background
+├── prisma/           # Configurações e schemas do Prisma
+└── routes/           # Definição das rotas da API
 ```
 
-## 🛠️ Configuração
+## 🛠️ Arquitetura
+
+O projeto segue uma arquitetura limpa com:
+
+- **Controllers**: Responsáveis por receber as requisições HTTP e retornar as respostas
+- **Services**: Contêm a lógica de negócio da aplicação
+- **Repositories**: Responsáveis pelo acesso aos dados usando Prisma
+- **DTOs**: Objetos de transferência de dados para validação
+
+### Injeção de Dependência
+
+O projeto utiliza o `tsyringe` para gerenciar a injeção de dependência. Exemplo de uso:
+
+```typescript
+// Controller com injeção de dependência
+export default class AuthController {
+  constructor(
+    @inject('UserService')
+    private userService: UserService
+  ) {}
+
+  async handleLogin(request: Request, response: Response) {
+    // ...
+  }
+}
+```
+
+## 🚀 Como executar
 
 1. Clone o repositório
 2. Instale as dependências:
@@ -34,82 +60,31 @@ src/
 yarn install
 ```
 
-3. Configure as variáveis de ambiente:
+3. Configure o banco de dados:
 ```bash
-cp .env.example .env
+# Gere o cliente do Prisma
+npx prisma generate
+
+# Execute as migrações
+npx prisma migrate dev
 ```
 
-4. Inicie o Redis usando Docker:
-```bash
-docker-compose up -d redis
-```
+4. Execute o projeto:
 
-## 🚀 Executando o Projeto
-
+Para desenvolvimento:
 ```bash
-# Desenvolvimento
 yarn dev
-
-# Produção
-yarn build
-yarn start
 ```
 
-## 📝 Funcionalidades Implementadas
-
-### Autenticação
-- Rota de login com validação usando Zod
-- Processamento assíncrono de jobs após login
-
-### Jobs
-- Sistema de filas usando Bull
-- Job de exemplo que dispara mensagem após login
-- Configuração de retry e backoff
-
-### Validação
-- Validação de dados usando Zod
-- Middlewares de validação para rotas
-
-## 🔄 Fluxo de Autenticação
-
-1. Usuário faz requisição de login
-2. Dados são validados pelo middleware
-3. Service processa a autenticação
-4. Job é disparado para processamento assíncrono
-5. Após 10 segundos, mensagem é exibida no console
-
-## 🐳 Docker
-
-O projeto inclui configuração Docker com:
-- Redis para gerenciamento de filas
-- Configuração para a aplicação Node.js
-
-Para iniciar apenas o Redis:
+Para produção:
 ```bash
-docker-compose up -d redis
+# Start no projeto
+$ docker compose up -d --build
+
+# Ver logs
+$ docker compose logs -f
 ```
 
-## 📚 Scripts Disponíveis
-
-- `yarn dev`: Inicia o servidor em modo desenvolvimento
-- `yarn build`: Compila o projeto
-- `yarn start`: Inicia o servidor em modo produção
-- `yarn test`: Executa os testes
-
-## 🔧 Variáveis de Ambiente
-
-- `APP_PORT`: Porta da aplicação (default: 3333)
-- `REDIS_HOST`: Host do Redis (default: localhost)
-- `REDIS_PORT`: Porta do Redis (default: 6379)
-
-## 🤝 Contribuindo
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📄 Licença
+## 📝 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.

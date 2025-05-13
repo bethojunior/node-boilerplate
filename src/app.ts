@@ -1,8 +1,10 @@
+import "reflect-metadata";
 import cluster from 'cluster';
 import os from 'os';
 import express from 'express';
 import * as dotenv from 'dotenv';
 import { router } from './routes';
+
 
 dotenv.config();
 
