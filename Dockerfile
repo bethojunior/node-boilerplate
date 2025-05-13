@@ -18,8 +18,8 @@ RUN dnf clean all
 
 COPY . .
 
-RUN npm install
+RUN yarn install
 ENV PATH=$PATH:/var/www/html/node_modules/.bin/
 ENV NODE_OPTIONS="--max-old-space-size=1024"
-RUN npm run build
-CMD ["npm", "run", "start:prod"]
+RUN yarn build
+CMD ["node", "dist/app.js"]
