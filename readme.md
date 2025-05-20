@@ -1,5 +1,7 @@
-# Node.js Boilerplate
-
+<div style="display: flex; align-items:center; justify-content: center">
+<img width="300" src="public/logo.png">
+</div>
+<br>
 Este é um boilerplate para projetos Node.js utilizando TypeScript, Express, Prisma e injeção de dependência com tsyringe.
 
 ## 🚀 Tecnologias
